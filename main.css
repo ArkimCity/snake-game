@@ -13,3 +13,9 @@ body {
 canvas {
   background-color: black;
 }
+
+#score {
+  position: relative;
+
+  bottom: 50px;
+}
