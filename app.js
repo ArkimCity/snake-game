@@ -33,7 +33,11 @@ export default class {
         const loop = () => {
             context.clearRect(0,0, parseInt(this.canvas_width), parseInt(this.canvas_height))
             this.$score.innerText = 'ate ' + (this.snake.length - this.init_length) + ' apples'
-            this.move_snake()
+            
+            if (this.move_snake()) {
+                return
+            }
+
             this.draw_snake(context)
             this.draw_apple(context)
 
@@ -45,24 +49,6 @@ export default class {
         requestAnimationFrame(loop)
     }
 
-    death_check(next_x, next_y) {
-        let self_death = false
-
-        if (next_x >= this.canvas_width || next_x < 0 || next_y >= this.canvas_height || next_y < 0) {
-            return true
-        }
-
-        this.snake.cells.forEach((cell) => {
-            if (cell.x == next_x && cell.y == next_y) {
-                self_death = true
-            }
-        })
-
-        if (self_death) {
-            return true
-        }
-    }
-
     move_snake() {
         const next_x = this.snake.cells[this.snake.cells.length - 1].x + this.snake.vx
         const next_y = this.snake.cells[this.snake.cells.length - 1].y + + this.snake.vy
@@ -70,6 +56,7 @@ export default class {
         if (this.death_check(next_x, next_y)) {
             alert('Dead')
             location.reload()
+            return true
         }
 
         if (next_x == this.apple.x && next_y == this.apple.y) {
@@ -120,6 +107,24 @@ export default class {
     draw_apple(context) {
         context.fillStyle = 'red';
         context.fillRect(this.apple.x, this.apple.y, this.grid-1, this.grid-1);
+    }
+
+    death_check(next_x, next_y) {
+        let self_death = false
+
+        if (next_x >= this.canvas_width || next_x < 0 || next_y >= this.canvas_height || next_y < 0) {
+            return true
+        }
+
+        this.snake.cells.forEach((cell) => {
+            if (cell.x == next_x && cell.y == next_y) {
+                self_death = true
+            }
+        })
+
+        if (self_death) {
+            return true
+        }
     }
 
     add_direction_key() {
