@@ -14,10 +14,10 @@ export default class {
         $target.appendChild(this.$canvas)
         const context = this.$canvas.getContext('2d');
 
-        this.grid = 16
+        this.cell_size = 16
         this.apple = {x: Math.floor(Math.random() * 40) * 16, y: Math.floor(Math.random() * 40) * 16}
         this.snake = {
-            vx: this.grid,
+            vx: this.cell_size,
             vy: 0,
             cells: [{x:96, y: 96}],
             length: this.init_length
@@ -38,6 +38,7 @@ export default class {
                 return
             }
 
+            this.draw_grid(context)
             this.draw_snake(context)
             this.draw_apple(context)
 
@@ -97,16 +98,33 @@ export default class {
         }
     }
 
+    draw_grid(context) {
+        for (let i = 0; i < this.canvas_height / this.cell_size; i++) {
+
+            context.strokeStyle = 'white';
+            context.lineWidth = 0.5;
+            context.beginPath();
+
+            context.moveTo(0, i * this.cell_size);
+            context.lineTo(this.canvas_height, i * this.cell_size);
+
+            context.moveTo(i * this.cell_size, 0);
+            context.lineTo(i * this.cell_size, this.canvas_height);
+
+            context.stroke();
+        }
+    }
+
     draw_snake(context) {
         context.fillStyle = 'white';
         this.snake.cells.forEach(cell => {
-            context.fillRect(cell.x, cell.y, this.grid-1, this.grid-1);
+            context.fillRect(cell.x, cell.y, this.cell_size-1, this.cell_size-1);
         });
     }
 
     draw_apple(context) {
         context.fillStyle = 'red';
-        context.fillRect(this.apple.x, this.apple.y, this.grid-1, this.grid-1);
+        context.fillRect(this.apple.x, this.apple.y, this.cell_size-1, this.cell_size-1);
     }
 
     death_check(next_x, next_y) {
@@ -133,21 +151,21 @@ export default class {
                 // vy == 0 이 아니라 해당 방식으로 해야 하는 이유는, 다음 셀이 생성되기 전에 다시 거꾸로 가는 방향을 입력할 경우를 걸러내기 위해서
                 if (this.snake.cells[this.snake.cells.length - 1].y == this.snake.cells[this.snake.cells.length - 2].y) {
                     this.snake.vx = 0
-                    this.snake.vy = - this.grid
+                    this.snake.vy = - this.cell_size
                 }
             } else if (e.key.match('ArrowDown')) {
                 if (this.snake.cells[this.snake.cells.length - 1].y == this.snake.cells[this.snake.cells.length - 2].y) {
                     this.snake.vx = 0
-                    this.snake.vy = this.grid
+                    this.snake.vy = this.cell_size
                 }
             } else if (e.key.match('ArrowLeft')) {
                 if (this.snake.cells[this.snake.cells.length - 1].x == this.snake.cells[this.snake.cells.length - 2].x) {
-                    this.snake.vx = - this.grid
+                    this.snake.vx = - this.cell_size
                     this.snake.vy = 0
                 }
             } else if (e.key.match('ArrowRight')) {
                 if (this.snake.cells[this.snake.cells.length - 1].x == this.snake.cells[this.snake.cells.length - 2].x) {
-                    this.snake.vx = this.grid
+                    this.snake.vx = this.cell_size
                     this.snake.vy = 0
                 }
             }
