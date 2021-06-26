@@ -134,7 +134,8 @@ export default class {
             return true
         }
 
-        this.snake.cells.forEach((cell) => {
+        const check_cells = this.snake.cells.slice(1)
+        this.snake.cells.slice(1).forEach((cell) => {
             if (cell.x == next_x && cell.y == next_y) {
                 self_death = true
             }
