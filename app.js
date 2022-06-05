@@ -47,7 +47,7 @@ export default class {
 
         this.$hall_of_fame.appendChild(this.$head_row)
 
-        fetch("http://183.101.244.53:8080/records?_sort=score&_order=desc&_limit=25").then((response) => {
+        fetch("https://183.101.244.53:8081/records?_sort=score&_order=desc&_limit=25").then((response) => {
             return response.json()
         }).then((json_data) => {
 
@@ -112,7 +112,7 @@ export default class {
 
             } else {
                 let xhr = new XMLHttpRequest();
-                xhr.open("POST", "http://183.101.244.53:8080/records");
+                xhr.open("POST", "https://183.101.244.53:8081/records");
 
                 xhr.setRequestHeader("Accept", "application/json");
                 xhr.setRequestHeader("Content-Type", "application/json");
