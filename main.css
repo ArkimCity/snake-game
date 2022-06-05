@@ -19,3 +19,9 @@ canvas {
 
   bottom: 50px;
 }
+
+#hall_of_fame {
+  position: absolute;
+  top: 100px;
+  left: 100px;
+}

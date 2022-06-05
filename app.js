@@ -1,10 +1,12 @@
 export default class {
     constructor($target) {
+        this.draw_hall_of_fame($target)
+
         this.canvas_width = '640'
         this.canvas_height = '640'
         this.animationInterval = 50 // ms
         this.init_length = 5
-
+        
         this.$canvas = document.createElement('canvas')
         this.$canvas.width = this.canvas_width
         this.$canvas.height = this.canvas_height
@@ -29,11 +31,50 @@ export default class {
         this.add_direction_key()
     }
 
+    draw_hall_of_fame($target) {
+        
+        this.$hall_of_fame = document.createElement('table')
+        this.$hall_of_fame.innerText = "HALL OF FAME"
+        this.$hall_of_fame.id = "hall_of_fame"
+
+        this.$head_row = document.createElement('tr')
+        this.$head_name = document.createElement('th')
+        this.$head_name.innerText = "name"
+        this.$head_score = document.createElement('th')
+        this.$head_score.innerText = "score"
+        this.$head_row.appendChild(this.$head_name)
+        this.$head_row.appendChild(this.$head_score)
+
+        this.$hall_of_fame.appendChild(this.$head_row)
+
+        fetch("http://183.101.244.53:8080/records?_sort=score&_order=desc&_limit=25").then((response) => {
+            return response.json()
+        }).then((json_data) => {
+
+            json_data.forEach((hall_of_fame_each_data) => {
+
+                let $row = document.createElement('tr')
+
+                let $name = document.createElement('td')
+                $name.innerText = hall_of_fame_each_data.name
+                let $score = document.createElement('td')
+                $score.innerText = hall_of_fame_each_data.score
+
+                $row.appendChild($name)
+                $row.appendChild($score)
+
+                this.$hall_of_fame.appendChild($row)
+            })
+            
+            $target.appendChild(this.$hall_of_fame)
+        })
+    }
+
     render(context) {
 
         const loop = () => {
             this.render_single_time(context)
-
+            
             setTimeout(() => {
                 requestAnimationFrame(loop)
             }, this.animationInterval)
@@ -53,6 +94,8 @@ export default class {
         this.draw_grid(context)
         this.draw_apple(context)
         this.draw_snake(context)
+
+        return false
     }
 
     move_snake() {
@@ -60,7 +103,33 @@ export default class {
         const next_y = this.snake.cells[this.snake.cells.length - 1].y + + this.snake.vy
 
         if (this.death_check(next_x, next_y)) {
-            alert('Dead')
+            
+            let person = prompt("Your score is " + String(this.snake.length - this.init_length) + ". If you wish to register, please enter your name");
+            let text;
+            if (person == null || person == "") {
+
+                alert("ok! have a great day!")
+
+            } else {
+                let xhr = new XMLHttpRequest();
+                xhr.open("POST", "http://183.101.244.53:8080/records");
+
+                xhr.setRequestHeader("Accept", "application/json");
+                xhr.setRequestHeader("Content-Type", "application/json");
+
+                xhr.onload = () => console.log(xhr.responseText);
+
+                let data = {
+                    "name": person,
+                    "score": this.snake.length - this.init_length
+                };
+
+                xhr.send(JSON.stringify(data));
+
+                alert(data)
+
+            }
+
             location.reload()
             return true
         }
