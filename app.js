@@ -125,9 +125,6 @@ export default class {
                 };
 
                 xhr.send(JSON.stringify(data));
-
-                alert(data)
-
             }
 
             location.reload()
