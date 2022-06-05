@@ -23,24 +23,16 @@ export default class {
             length: this.init_length
         }
 
+        this.render_single_time(context)
+
         this.render(context)
         this.add_direction_key()
     }
 
     render(context) {
-        this.draw_apple(context)
 
         const loop = () => {
-            context.clearRect(0,0, parseInt(this.canvas_width), parseInt(this.canvas_height))
-            this.$score.innerText = 'ate ' + (this.snake.length - this.init_length) + ' apples'
-            
-            if (this.move_snake()) {
-                return
-            }
-
-            this.draw_grid(context)
-            this.draw_snake(context)
-            this.draw_apple(context)
+            this.render_single_time(context)
 
             setTimeout(() => {
                 requestAnimationFrame(loop)
@@ -48,6 +40,19 @@ export default class {
         }
 
         requestAnimationFrame(loop)
+    }
+
+    render_single_time(context) {
+        context.clearRect(0,0, parseInt(this.canvas_width), parseInt(this.canvas_height))
+        this.$score.innerText = 'ate ' + (this.snake.length - this.init_length) + ' apples'
+        
+        if (this.move_snake()) {
+            return
+        }
+
+        this.draw_grid(context)
+        this.draw_apple(context)
+        this.draw_snake(context)
     }
 
     move_snake() {
